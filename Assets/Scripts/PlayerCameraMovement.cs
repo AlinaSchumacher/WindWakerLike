@@ -44,13 +44,13 @@ public class PlayerCameraMovement : MonoBehaviour
         currentAngleH %= 360f; //zwischen 0 und 360°
 
         //vertical
-        currentAngleV -= lookDir.y * panSpeedV * Time.deltaTime;
+        currentAngleV += lookDir.y * panSpeedV * Time.deltaTime;
         currentAngleV = Mathf.Clamp(currentAngleV, yMin, yMax);
 
         Quaternion rotation = Quaternion.Euler(currentAngleV, currentAngleH, 0f);
         Vector3 newPosition = rotation * (Vector3.back * offsetRadius);
 
-        follow.FollowOffset = newPosition;
+        follow.FollowOffset = Vector3.Lerp(follow.FollowOffset, newPosition, Time.deltaTime * 10);
     }
 
     private void OnLookAround(InputValue v)
