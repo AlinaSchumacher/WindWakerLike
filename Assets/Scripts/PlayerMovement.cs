@@ -9,21 +9,53 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     private float rotateSpeed;
+
+    [SerializeField]
+    private float jumpHeight;
+
+    [SerializeField]
+    private float jumpSpeed;
+
     private Rigidbody rb;
     private Vector3 moveDir;
+    private bool isOnGround;
+    private float targetJumpY;
+    private bool jumped;
 
     public event EventHandler<bool> OnIsWalking;
     public event EventHandler<bool> OnIsRunning;
+    public event EventHandler<bool> OnIsFalling;
+    public event EventHandler OnJumped;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        targetJumpY = 0;
     }
 
     private void FixedUpdate()
     {
         HandleRotation();
         HandleMovement();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Ground")
+        {
+            isOnGround = true;
+            OnIsFalling?.Invoke(this, !isOnGround);
+            jumped = false;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {
+            isOnGround = false;
+            OnIsFalling?.Invoke(this, !isOnGround);
+        }
     }
 
     private void HandleRotation()
@@ -36,6 +68,12 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 currentPos = rb.position;
         Vector3 newPos = currentPos + moveDir * runSpeed * Time.deltaTime;
+
+        //jump
+        if (jumped)
+            newPos += Vector3.up * jumpSpeed * Time.deltaTime;
+        if (currentPos.y >= targetJumpY)
+            jumped = false;
 
         rb.MovePosition(newPos);
     }
@@ -63,6 +101,16 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             OnIsRunning?.Invoke(this, true);
+        }
+    }
+
+    private void OnJump()
+    {
+        if (isOnGround)
+        {
+            OnJumped?.Invoke(this, EventArgs.Empty);
+            targetJumpY = rb.position.y + jumpHeight;
+            jumped = true;
         }
     }
 }
