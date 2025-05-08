@@ -252,7 +252,7 @@ MonoBehaviour:
   runSpeed: 7
   crouchWalkSpeed: 2
   rotateSpeed: 15
-  jumpHeight: 1
+  jumpHeight: 2
   jumpSpeed: 5
 --- !u!136 &229688285
 CapsuleCollider:
@@ -760,8 +760,8 @@ MonoBehaviour:
   follow: {fileID: 1028642460}
   panSpeedH: 200
   panSpeedV: 50
-  yMax: 20
-  yMin: -85
+  yMax: 85
+  yMin: -20
 --- !u!114 &1028642464
 MonoBehaviour:
   m_ObjectHideFlags: 0

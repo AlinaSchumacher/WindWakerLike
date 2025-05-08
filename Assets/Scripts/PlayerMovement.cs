@@ -127,7 +127,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCrouch(InputValue v)
     {
-        IsCrouching = v.Get<float>() == 1;
-        OnIsCrouching?.Invoke(this, IsCrouching);
+        if (isOnGround)
+        {
+            IsCrouching = v.Get<float>() == 1;
+            OnIsCrouching?.Invoke(this, IsCrouching);
+        }
     }
 }
