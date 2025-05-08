@@ -8,6 +8,9 @@ public class PlayerMovement : MonoBehaviour
     private float runSpeed;
 
     [SerializeField]
+    private float crouchWalkSpeed;
+
+    [SerializeField]
     private float rotateSpeed;
 
     [SerializeField]
@@ -19,7 +22,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private Vector3 moveDir;
     private bool isOnGround;
-    private bool IsCrouching = true;
+    private bool IsCrouching = false;
     private float targetJumpY;
     private bool jumped;
 
@@ -69,13 +72,19 @@ public class PlayerMovement : MonoBehaviour
     private void HandleMovement()
     {
         Vector3 currentPos = rb.position;
-        Vector3 newPos = currentPos + moveDir * runSpeed * Time.deltaTime;
+        Vector3 newPos;
+        if (IsCrouching)
+            newPos = currentPos + moveDir * crouchWalkSpeed * Time.deltaTime;
+        else
+        {
+            newPos = currentPos + moveDir * runSpeed * Time.deltaTime;
 
-        //jump
-        if (jumped)
-            newPos += Vector3.up * jumpSpeed * Time.deltaTime;
-        if (currentPos.y >= targetJumpY)
-            jumped = false;
+            //jump
+            if (jumped)
+                newPos += Vector3.up * jumpSpeed * Time.deltaTime;
+            if (currentPos.y >= targetJumpY)
+                jumped = false;
+        }
 
         rb.MovePosition(newPos);
     }
@@ -108,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnJump()
     {
-        if (isOnGround)
+        if (isOnGround && !IsCrouching)
         {
             OnJumped?.Invoke(this, EventArgs.Empty);
             targetJumpY = rb.position.y + jumpHeight;

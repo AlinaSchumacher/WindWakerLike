@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerAnimation : MonoBehaviour
+public class PlayerMovementAnimation : MonoBehaviour
 {
     private const String IS_WALKING = "IsWalking";
     private const String IS_RUNNING = "IsRunning";

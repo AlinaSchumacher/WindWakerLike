@@ -250,8 +250,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runSpeed: 7
+  crouchWalkSpeed: 2
   rotateSpeed: 15
-  jumpHeight: 2
+  jumpHeight: 1
   jumpSpeed: 5
 --- !u!136 &229688285
 CapsuleCollider:
