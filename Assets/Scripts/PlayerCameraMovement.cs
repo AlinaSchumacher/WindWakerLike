@@ -29,7 +29,7 @@ public class PlayerCameraMovement : MonoBehaviour
     private void Start()
     {
         //offset depending on Cam Position
-        offsetRadius = follow.FollowOffset.z;
+        offsetRadius = Mathf.Abs(follow.FollowOffset.z);
     }
 
     private void Update()
@@ -44,7 +44,7 @@ public class PlayerCameraMovement : MonoBehaviour
         currentAngleH %= 360f; //zwischen 0 und 360°
 
         //vertical
-        currentAngleV += lookDir.y * panSpeedV * Time.deltaTime;
+        currentAngleV -= lookDir.y * panSpeedV * Time.deltaTime;
         currentAngleV = Mathf.Clamp(currentAngleV, yMin, yMax);
 
         Quaternion rotation = Quaternion.Euler(currentAngleV, currentAngleH, 0f);
