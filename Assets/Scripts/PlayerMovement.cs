@@ -19,12 +19,14 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private Vector3 moveDir;
     private bool isOnGround = true;
+    private bool IsCrouching = true;
     private float targetJumpY;
     private bool jumped;
 
     public event EventHandler<bool> OnIsWalking;
     public event EventHandler<bool> OnIsRunning;
     public event EventHandler<bool> OnIsFalling;
+    public event EventHandler<bool> OnIsCrouching;
     public event EventHandler OnJumped;
 
     private void Awake()
@@ -112,5 +114,11 @@ public class PlayerMovement : MonoBehaviour
             targetJumpY = rb.position.y + jumpHeight;
             jumped = true;
         }
+    }
+
+    private void OnCrouch(InputValue v)
+    {
+        IsCrouching = v.Get<float>() == 1;
+        OnIsCrouching?.Invoke(this, IsCrouching);
     }
 }

@@ -6,6 +6,7 @@ public class PlayerAnimation : MonoBehaviour
     private const String IS_WALKING = "IsWalking";
     private const String IS_RUNNING = "IsRunning";
     private const String IS_FALLING = "IsFalling";
+    private const String IS_Crouching = "IsCrouching";
     private const String JUMP = "Jump";
 
     [SerializeField]
@@ -20,6 +21,7 @@ public class PlayerAnimation : MonoBehaviour
         playerMovement.OnIsWalking += PlayerMovement_OnIsWalking;
         playerMovement.OnIsRunning += PlayerMovement_OnIsRunning;
         playerMovement.OnIsFalling += PlayerMovement_OnIsFalling;
+        playerMovement.OnIsCrouching += PlayerMovement_OnIsCrouching;
         playerMovement.OnJumped += PlayerMovement_OnJump;
     }
 
@@ -41,5 +43,10 @@ public class PlayerAnimation : MonoBehaviour
     private void PlayerMovement_OnJump(object sender, EventArgs e)
     {
         animator.SetTrigger(JUMP);
+    }
+
+    private void PlayerMovement_OnIsCrouching(object sender, bool IsCrouching)
+    {
+        animator.SetBool(IS_Crouching, IsCrouching);
     }
 }
