@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
     private Vector3 moveDir;
-    private bool isOnGround = true;
+    private bool isOnGround;
     private bool IsCrouching = true;
     private float targetJumpY;
     private bool jumped;
