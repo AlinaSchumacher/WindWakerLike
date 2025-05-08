@@ -6,7 +6,6 @@ public class PlayerAnimation : MonoBehaviour
     private const String IS_WALKING = "IsWalking";
     private const String IS_RUNNING = "IsRunning";
     private const String IS_FALLING = "IsFalling";
-    private const String LAND = "Land";
     private const String JUMP = "Jump";
 
     [SerializeField]
@@ -37,8 +36,6 @@ public class PlayerAnimation : MonoBehaviour
     private void PlayerMovement_OnIsFalling(object sender, bool isFalling)
     {
         animator.SetBool(IS_FALLING, isFalling);
-        if (!isFalling)
-            animator.SetTrigger(LAND);
     }
 
     private void PlayerMovement_OnJump(object sender, EventArgs e)
