@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private const String GROUND_TAG = "Ground";
+
     [SerializeField]
     private float runSpeed;
 
@@ -46,7 +48,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Ground")
+        if (other.gameObject.tag == GROUND_TAG) { }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == GROUND_TAG)
         {
             isOnGround = true;
             OnIsFalling?.Invoke(this, !isOnGround);
@@ -54,9 +61,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
-        if (collision.gameObject.tag == "Ground")
+        if (other.gameObject.tag == GROUND_TAG)
         {
             isOnGround = false;
             OnIsFalling?.Invoke(this, !isOnGround);

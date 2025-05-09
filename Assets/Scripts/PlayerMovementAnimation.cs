@@ -28,7 +28,7 @@ public class PlayerMovementAnimation : MonoBehaviour
 
     private void PlayerMovement_OnIsWalking(object sender, bool isWalking)
     {
-        animator.SetBool(IS_WALKING, isWalking);
+        // animator.SetBool(IS_WALKING, isWalking);
     }
 
     private void PlayerMovement_OnIsRunning(object sender, bool isRunning)
@@ -39,8 +39,8 @@ public class PlayerMovementAnimation : MonoBehaviour
     private void PlayerMovement_OnIsFalling(object sender, bool isFalling)
     {
         animator.SetBool(IS_FALLING, isFalling);
-        if (!isFalling)
-            animator.SetBool(IS_LANDING, true);
+        // if (!isFalling)
+        //     animator.SetTrigger(IS_LANDING);
     }
 
     private void PlayerMovement_OnJump(object sender, EventArgs e)
@@ -51,10 +51,5 @@ public class PlayerMovementAnimation : MonoBehaviour
     private void PlayerMovement_OnIsCrouching(object sender, bool isCrouching)
     {
         animator.SetBool(IS_CROUCHING, isCrouching);
-    }
-
-    private void Landed()
-    {
-        animator.SetBool(IS_LANDING, false);
     }
 }
