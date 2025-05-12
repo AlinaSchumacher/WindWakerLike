@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,14 +6,16 @@ public class PlayerMovement : MonoBehaviour
 {
     private const String GROUND_TAG = "Ground";
 
+    [Header("Movement Settings")]
+    [SerializeField]
+    private LayerMask obstacleLayer;
+
+    [Header("Default Movement")]
     [SerializeField]
     private float runSpeed;
 
     [SerializeField]
-    private float sprintSpeed;
-
-    [SerializeField]
-    private float crouchWalkSpeed;
+    private Collider defaultCollider;
 
     [SerializeField]
     private float rotateSpeed;
@@ -25,10 +26,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float jumpSpeed;
 
-    private enum MovementState
+    [Header("Crouching")]
+    [SerializeField]
+    private float crouchWalkSpeed;
+
+    [SerializeField]
+    private Collider crouchCollider;
+
+    public enum MovementState
     {
         Default,
-        Sprinting,
         Crouching,
     }
 
@@ -43,7 +50,6 @@ public class PlayerMovement : MonoBehaviour
     public event EventHandler<bool> OnIsRunning;
     public event EventHandler<bool> OnIsFalling;
     public event EventHandler<bool> OnIsCrouching;
-    public event EventHandler<bool> OnIsSprinting;
     public event EventHandler OnJumped;
 
     private void Awake()
@@ -75,6 +81,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        Collider other = collision.collider;
+        if (other.tag == GROUND_TAG)
+        {
+            Debug.Log(collision.GetContact(0).point);
+        }
+    }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == GROUND_TAG)
@@ -101,9 +116,6 @@ public class PlayerMovement : MonoBehaviour
             case MovementState.Crouching:
                 speedVal = crouchWalkSpeed;
                 break;
-            case MovementState.Sprinting:
-                speedVal = sprintSpeed;
-                break;
             default:
                 speedVal = runSpeed;
                 break;
@@ -122,6 +134,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void SetStateCrouching(bool isCrouching, MovementState change = MovementState.Default)
     {
+        crouchCollider.enabled = isCrouching;
+        defaultCollider.enabled = !isCrouching;
+
         state = (isCrouching) ? MovementState.Crouching : change;
         OnIsCrouching?.Invoke(this, isCrouching);
     }
@@ -129,17 +144,6 @@ public class PlayerMovement : MonoBehaviour
     public bool IsCrouching()
     {
         return state == MovementState.Crouching;
-    }
-
-    private void SetStateSprinting(bool isSprinting, MovementState change = MovementState.Default)
-    {
-        state = (isSprinting) ? MovementState.Sprinting : change;
-        OnIsSprinting?.Invoke(this, isSprinting);
-    }
-
-    public bool IsSprinting()
-    {
-        return state == MovementState.Sprinting;
     }
 
     private void OnMove(InputValue v)
@@ -161,8 +165,6 @@ public class PlayerMovement : MonoBehaviour
         {
             OnIsRunning?.Invoke(this, false);
             // OnIsWalking?.Invoke(this, false);
-            if (IsSprinting())
-                SetStateSprinting(false);
         }
         else
         {
@@ -188,22 +190,6 @@ public class PlayerMovement : MonoBehaviour
         if (isOnGround)
         {
             SetStateCrouching(!IsCrouching());
-            SetStateSprinting(
-                false,
-                (IsCrouching()) ? MovementState.Crouching : MovementState.Default
-            );
-        }
-    }
-
-    private void OnSprint()
-    {
-        if (isOnGround)
-        {
-            SetStateSprinting(!IsSprinting());
-            SetStateCrouching(
-                false,
-                (IsSprinting()) ? MovementState.Sprinting : MovementState.Default
-            );
         }
     }
 }

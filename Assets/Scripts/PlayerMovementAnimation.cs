@@ -7,28 +7,22 @@ public class PlayerMovementAnimation : MonoBehaviour
     private const String IS_RUNNING = "IsRunning";
     private const String IS_FALLING = "IsFalling";
     private const String IS_CROUCHING = "IsCrouching";
-    private const String IS_SPRINTING = "IsSprinting";
     private const String IS_LANDING = "IsLanding";
     private const String JUMP = "Jump";
 
     [SerializeField]
     private Animator animator;
 
-    private Transform player;
+    private PlayerMovement playerMovement;
 
     private void Start()
     {
-        player = transform.parent;
-
-        if (player.TryGetComponent<PlayerMovement>(out PlayerMovement playerMovement))
-        {
-            // playerMovement.OnIsWalking += PlayerMovement_OnIsWalking;
-            playerMovement.OnIsRunning += PlayerMovement_OnIsRunning;
-            playerMovement.OnIsFalling += PlayerMovement_OnIsFalling;
-            playerMovement.OnIsCrouching += PlayerMovement_OnIsCrouching;
-            playerMovement.OnIsSprinting += PlayerMovement_OnIsSprinting;
-            playerMovement.OnJumped += PlayerMovement_OnJump;
-        }
+        playerMovement = transform.GetComponentInParent<PlayerMovement>();
+        // playerMovement.OnIsWalking += PlayerMovement_OnIsWalking;
+        playerMovement.OnIsRunning += PlayerMovement_OnIsRunning;
+        playerMovement.OnIsFalling += PlayerMovement_OnIsFalling;
+        playerMovement.OnIsCrouching += PlayerMovement_OnIsCrouching;
+        playerMovement.OnJumped += PlayerMovement_OnJump;
     }
 
     // private void PlayerMovement_OnIsWalking(object sender, bool isWalking)
@@ -56,10 +50,5 @@ public class PlayerMovementAnimation : MonoBehaviour
     private void PlayerMovement_OnIsCrouching(object sender, bool isCrouching)
     {
         animator.SetBool(IS_CROUCHING, isCrouching);
-    }
-
-    private void PlayerMovement_OnIsSprinting(object sender, bool isSprinting)
-    {
-        animator.SetBool(IS_SPRINTING, isSprinting);
     }
 }

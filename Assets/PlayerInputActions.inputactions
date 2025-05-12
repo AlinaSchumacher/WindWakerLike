@@ -15,29 +15,11 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Jump",
-                    "type": "Button",
-                    "id": "a62f9971-6b39-4523-b4e2-1eb2b2704dd9",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "Crouch",
                     "type": "Button",
                     "id": "6453d340-ca4d-48c1-a2eb-22a55fd4af18",
                     "expectedControlType": "",
                     "processors": "Clamp(max=1)",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Sprint",
-                    "type": "Button",
-                    "id": "5e27b00e-3e96-4291-a0d6-0a17c0d96f7d",
-                    "expectedControlType": "",
-                    "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
                 }
@@ -100,34 +82,12 @@
                 },
                 {
                     "name": "",
-                    "id": "67013250-1494-411d-b266-71fb86674e16",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "7c8fc434-9859-4563-ad7b-7788d764a54a",
                     "path": "<Keyboard>/ctrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Crouch",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d30b7682-7e9f-471c-b604-03f68c09150c",
-                    "path": "<Keyboard>/shift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
