@@ -41,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
     private Vector3 moveDir;
+    private Vector3 moveDirRaw;
     private bool isOnGround;
     private MovementState state = MovementState.Default;
     private float targetJumpY;
@@ -62,6 +63,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        RelateToCamera();
         HandleRotation();
         HandleMovement();
     }
@@ -97,6 +99,17 @@ public class PlayerMovement : MonoBehaviour
             isOnGround = false;
             OnIsFalling?.Invoke(this, !isOnGround);
         }
+    }
+
+    private void RelateToCamera()
+    {
+        Vector3 cameraForward = Camera.main.transform.forward;
+        Vector3 cameraRight = Camera.main.transform.right;
+
+        cameraForward.y = 0f;
+        cameraRight.y = 0f;
+
+        moveDir = cameraForward * moveDirRaw.z + cameraRight * moveDirRaw.x;
     }
 
     private void HandleRotation()
@@ -149,15 +162,7 @@ public class PlayerMovement : MonoBehaviour
     private void OnMove(InputValue v)
     {
         Vector2 val = v.Get<Vector2>();
-        Vector3 inputDir = new Vector3(val.x, 0, val.y);
-
-        Vector3 cameraForward = Camera.main.transform.forward;
-        Vector3 cameraRight = Camera.main.transform.right;
-
-        cameraForward.y = 0f;
-        cameraRight.y = 0f;
-
-        moveDir = cameraForward * val.y + cameraRight * val.x;
+        moveDirRaw = new Vector3(val.x, 0, val.y);
 
         // Debug.Log(val);
 
