@@ -6,10 +6,6 @@ public class PlayerMovement : MonoBehaviour
 {
     private const String GROUND_TAG = "Ground";
 
-    [Header("Movement Settings")]
-    [SerializeField]
-    private LayerMask obstacleLayer;
-
     [Header("Default Movement")]
     [SerializeField]
     private float runSpeed;
@@ -20,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float rotateSpeed;
 
+    [Header("Jumping")]
     [SerializeField]
     private float jumpHeight;
 
@@ -33,6 +30,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private Collider crouchCollider;
 
+    [Header("Hanging")]
+    [SerializeField]
+    private float climbingSpeed;
+
     public enum MovementState
     {
         Default,
@@ -42,7 +43,9 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private Vector3 moveDir;
     private Vector3 moveDirRaw;
+    private PlayerLedgeInteraction pli;
     private bool isOnGround;
+    private bool isHanging;
     private MovementState state = MovementState.Default;
     private float targetJumpY;
     private bool jumped;
@@ -56,21 +59,29 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        pli = GetComponent<PlayerLedgeInteraction>();
+
+        pli.OnIsHanging += PLI_OnIsHanging;
+
+        crouchCollider.enabled = false;
         targetJumpY = 0;
     }
-
-    private void Update() { }
 
     private void FixedUpdate()
     {
         RelateToCamera();
+
+        if (isHanging)
+        {
+            HandleHangingMovement();
+            return;
+        }
+
+        if (!isOnGround)
+            pli.LedgeGrab();
+
         HandleRotation();
         HandleMovement();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == GROUND_TAG) { }
     }
 
     private void OnTriggerStay(Collider other)
@@ -80,15 +91,6 @@ public class PlayerMovement : MonoBehaviour
             isOnGround = true;
             OnIsFalling?.Invoke(this, !isOnGround);
             jumped = false;
-        }
-    }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        Collider other = collision.collider;
-        if (other.tag == GROUND_TAG)
-        {
-            Debug.Log(collision.GetContact(0).point);
         }
     }
 
@@ -145,6 +147,15 @@ public class PlayerMovement : MonoBehaviour
         rb.MovePosition(newPos);
     }
 
+    private void HandleHangingMovement()
+    {
+        Vector3 currentPos = rb.position;
+        Vector3 hangingMoveDir = new Vector3(moveDir.x, 0f, 0f);
+
+        Vector3 newPos = currentPos + hangingMoveDir * climbingSpeed * Time.deltaTime;
+        rb.MovePosition(newPos);
+    }
+
     private void SetStateCrouching(bool isCrouching, MovementState change = MovementState.Default)
     {
         crouchCollider.enabled = isCrouching;
@@ -192,9 +203,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCrouch()
     {
+        if (isHanging)
+        {
+            pli.SetIsHanging(false);
+            return;
+        }
+
         if (isOnGround)
         {
             SetStateCrouching(!IsCrouching());
         }
+    }
+
+    private void PLI_OnIsHanging(object sender, bool isHanging)
+    {
+        this.isHanging = isHanging;
     }
 }
