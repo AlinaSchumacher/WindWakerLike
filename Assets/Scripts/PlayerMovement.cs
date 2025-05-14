@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -150,9 +151,22 @@ public class PlayerMovement : MonoBehaviour
     private void HandleHangingMovement()
     {
         Vector3 currentPos = rb.position;
-        Vector3 hangingMoveDir = new Vector3(moveDir.x, 0f, 0f);
+        Vector3 newPos = currentPos + moveDir * climbingSpeed * Time.deltaTime;
 
-        Vector3 newPos = currentPos + hangingMoveDir * climbingSpeed * Time.deltaTime;
+        if (
+            !pli.TestForLedge(
+                newPos,
+                transform.forward,
+                pli.GetFrontOffset() + 0.1f,
+                out RaycastHit downHit,
+                out RaycastHit fwdHit
+            )
+        )
+            return;
+
+        newPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
+        newPos += pli.GetLedgeOffset();
+
         rb.MovePosition(newPos);
     }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerLedgeInteraction : MonoBehaviour
@@ -15,10 +16,16 @@ public class PlayerLedgeInteraction : MonoBehaviour
     [SerializeField]
     private float minGrabHeight;
 
+    [SerializeField]
+    private float frontOffset = 0.4f;
+
+    [SerializeField]
+    float downOffset = 0.1f;
+
     private Rigidbody rb;
     private bool wasHanging;
     private float hangingResetTimer;
-    private float lendgeOffset;
+    private Vector3 ledgeOffset;
 
     public event EventHandler<bool> OnIsHanging;
 
@@ -34,8 +41,16 @@ public class PlayerLedgeInteraction : MonoBehaviour
             wasHanging = false;
         }
         hangingResetTimer -= Time.deltaTime;
+    }
 
-        Debug.Log(rb.linearVelocity);
+    public Vector3 GetLedgeOffset()
+    {
+        return ledgeOffset;
+    }
+
+    public float GetFrontOffset()
+    {
+        return frontOffset;
     }
 
     public void SetIsHanging(bool val)
@@ -57,61 +72,55 @@ public class PlayerLedgeInteraction : MonoBehaviour
         if (wasHanging)
             return;
 
-        RaycastHit downHit;
-        float fwdOffset = 0.4f;
-
-        Vector3 lineDownStart =
-            (transform.position + Vector3.up * maxGrabHeight) + transform.forward * fwdOffset;
-        Vector3 lineDownEnd =
-            (transform.position + Vector3.up * minGrabHeight) + transform.forward * fwdOffset;
-
-        Physics.Linecast(lineDownStart, lineDownEnd, out downHit, climbableLayer);
-        Debug.DrawLine(lineDownStart, lineDownEnd, Color.white);
-
-        //stop if nothing hit
-        if (!downHit.collider)
-            return;
-
-        RaycastHit fwdHit;
-        float downOffset = 0.1f;
-        Vector3 lineFwdStart = new Vector3(
-            transform.position.x,
-            downHit.point.y - downOffset,
-            transform.position.z
-        );
-        Vector3 lineFwdEnd =
-            new Vector3(transform.position.x, downHit.point.y - downOffset, transform.position.z)
-            + transform.forward;
-
-        Physics.Linecast(lineFwdStart, lineFwdEnd, out fwdHit, climbableLayer);
-        Debug.DrawLine(fwdHit.point, fwdHit.point + fwdHit.normal, Color.red, 0.5f);
-
-        //stop if nothing hit
-        if (!fwdHit.collider)
+        if (
+            !TestForLedge(
+                transform.position,
+                transform.forward,
+                frontOffset,
+                out RaycastHit downHit,
+                out RaycastHit fwdHit
+            )
+        )
             return;
 
         Vector3 hangigPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
-        Vector3 offset = transform.forward * -fwdOffset + transform.up * -minGrabHeight;
-        hangigPos += offset;
+        hangigPos += ledgeOffset;
 
         transform.position = hangigPos;
         SetIsHanging(true);
         transform.forward = -fwdHit.normal;
     }
 
-    private bool TestForLedge()
+    public bool TestForLedge(
+        Vector3 position,
+        Vector3 fwd,
+        float fwdOffset,
+        out RaycastHit downHit,
+        out RaycastHit fwdHit
+    )
     {
-        RaycastHit downHit;
-        float fwdOffset = 0.4f;
+        downHit = new RaycastHit();
+        fwdHit = new RaycastHit();
 
-        Vector3 lineDownStart =
-            (transform.position + Vector3.up * maxGrabHeight) + transform.forward * fwdOffset;
-        Vector3 lineDownEnd =
-            (transform.position + Vector3.up * minGrabHeight) + transform.forward * fwdOffset;
+        Vector3 lineDownStart = (position + Vector3.up * maxGrabHeight) + fwd * fwdOffset;
+        Vector3 lineDownEnd = (position + Vector3.up * minGrabHeight) + fwd * fwdOffset;
 
         Physics.Linecast(lineDownStart, lineDownEnd, out downHit, climbableLayer);
         Debug.DrawLine(lineDownStart, lineDownEnd, Color.white);
 
-        return (downHit.collider);
+        //stop if nothing hit
+        if (!downHit.collider)
+            return false;
+
+        Vector3 lineFwdStart = new Vector3(position.x, downHit.point.y - downOffset, position.z);
+        Vector3 lineFwdEnd =
+            new Vector3(position.x, downHit.point.y - downOffset, position.z) + fwd;
+
+        Physics.Linecast(lineFwdStart, lineFwdEnd, out fwdHit, climbableLayer);
+        Debug.DrawLine(fwdHit.point, fwdHit.point + fwdHit.normal, Color.red, 0.5f);
+
+        ledgeOffset = transform.forward * -frontOffset + transform.up * -minGrabHeight;
+
+        return (fwdHit.collider);
     }
 }
