@@ -18,6 +18,7 @@ public class PlayerLedgeInteraction : MonoBehaviour
     private Rigidbody rb;
     private bool wasHanging;
     private float hangingResetTimer;
+    private float lendgeOffset;
 
     public event EventHandler<bool> OnIsHanging;
 
@@ -33,6 +34,8 @@ public class PlayerLedgeInteraction : MonoBehaviour
             wasHanging = false;
         }
         hangingResetTimer -= Time.deltaTime;
+
+        Debug.Log(rb.linearVelocity);
     }
 
     public void SetIsHanging(bool val)

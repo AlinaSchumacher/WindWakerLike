@@ -218,5 +218,7 @@ public class PlayerMovement : MonoBehaviour
     private void PLI_OnIsHanging(object sender, bool isHanging)
     {
         this.isHanging = isHanging;
+        if (isHanging)
+            jumped = false;
     }
 }
