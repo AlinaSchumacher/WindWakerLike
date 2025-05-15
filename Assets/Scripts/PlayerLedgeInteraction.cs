@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerLedgeInteraction : MonoBehaviour
@@ -22,15 +21,19 @@ public class PlayerLedgeInteraction : MonoBehaviour
     [SerializeField]
     float downOffset = 0.1f;
 
+    [SerializeField]
+    private float climbingSpeed;
+
     private Rigidbody rb;
+    private Player player;
+
     private bool wasHanging;
     private float hangingResetTimer;
     private Vector3 ledgeOffset;
 
-    public event EventHandler<bool> OnIsHanging;
-
     private void Awake()
     {
+        player = GetComponent<Player>();
         rb = GetComponent<Rigidbody>();
     }
 
@@ -41,6 +44,14 @@ public class PlayerLedgeInteraction : MonoBehaviour
             wasHanging = false;
         }
         hangingResetTimer -= Time.deltaTime;
+    }
+
+    private void FixedUpdate()
+    {
+        if (player.IsHanging())
+            HandleHangingMovement();
+        else if (!player.IsOnGround())
+            LedgeGrab();
     }
 
     public Vector3 GetLedgeOffset()
@@ -56,7 +67,6 @@ public class PlayerLedgeInteraction : MonoBehaviour
     public void SetIsHanging(bool val)
     {
         rb.useGravity = !val;
-        OnIsHanging?.Invoke(this, val);
 
         if (val)
             rb.linearVelocity = Vector3.zero;
@@ -87,8 +97,29 @@ public class PlayerLedgeInteraction : MonoBehaviour
         hangigPos += ledgeOffset;
 
         transform.position = hangigPos;
-        SetIsHanging(true);
+        player.SetIsHanging(true);
         transform.forward = -fwdHit.normal;
+    }
+
+    private void HandleHangingMovement()
+    {
+        Vector3 newPos = player.CalculateNewPosition(climbingSpeed);
+
+        if (
+            !TestForLedge(
+                newPos,
+                transform.forward,
+                frontOffset + 0.1f,
+                out RaycastHit downHit,
+                out RaycastHit fwdHit
+            )
+        )
+            return;
+
+        newPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
+        newPos += ledgeOffset;
+
+        rb.MovePosition(newPos);
     }
 
     public bool TestForLedge(

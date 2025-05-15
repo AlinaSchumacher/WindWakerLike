@@ -14,15 +14,17 @@ public class PlayerMovementAnimation : MonoBehaviour
     private Animator animator;
 
     private PlayerMovement playerMovement;
+    private Player player;
 
     private void Start()
     {
-        playerMovement = transform.GetComponentInParent<PlayerMovement>();
+        player = GetComponentInParent<Player>();
+
         // playerMovement.OnIsWalking += PlayerMovement_OnIsWalking;
-        playerMovement.OnIsRunning += PlayerMovement_OnIsRunning;
-        playerMovement.OnIsFalling += PlayerMovement_OnIsFalling;
-        playerMovement.OnIsCrouching += PlayerMovement_OnIsCrouching;
-        playerMovement.OnJumped += PlayerMovement_OnJump;
+        player.OnIsRunning += PlayerMovement_OnIsRunning;
+        player.OnIsFalling += PlayerMovement_OnIsFalling;
+        player.OnIsCrouching += PlayerMovement_OnIsCrouching;
+        player.OnJumped += PlayerMovement_OnJump;
     }
 
     // private void PlayerMovement_OnIsWalking(object sender, bool isWalking)

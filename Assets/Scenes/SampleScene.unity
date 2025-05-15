@@ -204,11 +204,12 @@ GameObject:
   - component: {fileID: 229688280}
   - component: {fileID: 229688283}
   - component: {fileID: 229688281}
-  - component: {fileID: 229688286}
   - component: {fileID: 229688285}
   - component: {fileID: 229688282}
+  - component: {fileID: 229688289}
   - component: {fileID: 229688284}
   - component: {fileID: 229688287}
+  - component: {fileID: 229688288}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -327,12 +328,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runSpeed: 7
-  defaultCollider: {fileID: 229688281}
   rotateSpeed: 15
   jumpHeight: 2
   jumpSpeed: 5
   crouchWalkSpeed: 2
-  crouchCollider: {fileID: 229688286}
   climbingSpeed: 2
 --- !u!136 &229688285
 CapsuleCollider:
@@ -357,29 +356,6 @@ CapsuleCollider:
   m_Height: 0.15
   m_Direction: 1
   m_Center: {x: 0, y: 0.25, z: 0}
---- !u!136 &229688286
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 229688279}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.4
-  m_Height: 1.2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.6, z: 0.23}
 --- !u!114 &229688287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,9 +371,44 @@ MonoBehaviour:
   climbableLayer:
     serializedVersion: 2
     m_Bits: 64
-  resetAfter: 1
+  coolDownTime: 1
   maxGrabHeight: 2.3
   minGrabHeight: 1.3
+  frontOffset: 0.4
+  downOffset: 0.1
+  climbingSpeed: 2
+--- !u!114 &229688288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 229688279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f7fc757956794439aef99b0042984b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCollider: {fileID: 0}
+  crouchColliderRadius: 0.4
+  crouchColliderHeight: 1.2
+  crouchColliderOffset: {x: 0, y: 0.6, z: 0.23}
+--- !u!114 &229688289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 229688279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d90b042b314f9a41be12183d20b0b11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCollider: {fileID: 229688281}
+  defaultColliderRadius: 0.36
+  defaultColliderHeight: 1.8
+  defaultColliderOffset: {x: 0, y: 0.9, z: 0}
 --- !u!4 &296518919 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4084504788478774, guid: fcc4229f634be704aa0dd336ad33c2b5, type: 3}
