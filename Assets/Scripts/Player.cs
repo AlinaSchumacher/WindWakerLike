@@ -175,5 +175,6 @@ public class Player : MonoBehaviour
 
     public Vector3 CalculateNewPosition(float speed) => pm.CalcNewPosition(speed);
 
-    public void GrabLedge() => pli.LedgeGrab();
+    public void GrabLedge(Vector3 hangingPos, Vector3 forward) =>
+        pli.LedgeGrab(hangingPos, forward);
 }

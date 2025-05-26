@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class PlayerLedgeInteraction : MonoBehaviour
@@ -48,10 +47,28 @@ public class PlayerLedgeInteraction : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //if hanging only move on ledge
         if (player.IsHanging())
+        {
             HandleHangingMovement();
-        else if (!player.IsOnGround())
-            LedgeGrab();
+            return;
+        }
+
+        //if not hanging, see if can hang
+        if (
+            TestForLedge(
+                transform.position,
+                transform.forward,
+                frontOffset,
+                out RaycastHit downHit,
+                out RaycastHit fwdHit
+            )
+        )
+        {
+            Vector3 hangingPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
+            Vector3 fwd = -fwdHit.normal;
+            LedgeGrab(hangingPos, fwd);
+        }
     }
 
     public Vector3 GetLedgeOffset()
@@ -77,28 +94,15 @@ public class PlayerLedgeInteraction : MonoBehaviour
         }
     }
 
-    public void LedgeGrab()
+    public void LedgeGrab(Vector3 hangingPos, Vector3 forward)
     {
         if (wasHanging)
             return;
 
-        if (
-            !TestForLedge(
-                transform.position,
-                transform.forward,
-                frontOffset,
-                out RaycastHit downHit,
-                out RaycastHit fwdHit
-            )
-        )
-            return;
-
-        Vector3 hangigPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
-        hangigPos += ledgeOffset;
-
-        transform.position = hangigPos;
+        hangingPos += ledgeOffset;
+        transform.position = hangingPos;
         player.SetIsHanging(true);
-        transform.forward = -fwdHit.normal;
+        transform.forward = forward;
     }
 
     private void HandleHangingMovement()
