@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 229688284}
   - component: {fileID: 229688287}
   - component: {fileID: 229688288}
+  - component: {fileID: 229688290}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -327,12 +328,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccff1ff248cb7ae42ac70809dcb32022, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runSpeed: 7
   rotateSpeed: 15
-  jumpHeight: 2
-  jumpSpeed: 5
+  runSpeed: 7
   crouchWalkSpeed: 2
-  climbingSpeed: 2
 --- !u!136 &229688285
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -389,7 +387,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2f7fc757956794439aef99b0042984b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCollider: {fileID: 0}
   crouchColliderRadius: 0.4
   crouchColliderHeight: 1.2
   crouchColliderOffset: {x: 0, y: 0.6, z: 0.23}
@@ -409,6 +406,21 @@ MonoBehaviour:
   defaultColliderRadius: 0.36
   defaultColliderHeight: 1.8
   defaultColliderOffset: {x: 0, y: 0.9, z: 0}
+  colliderWarpSpeed: 8
+--- !u!114 &229688290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 229688279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e932336431f368b4fa0a8464ca9e7bc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpHeight: 2
+  jumpSpeed: 5
 --- !u!4 &296518919 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4084504788478774, guid: fcc4229f634be704aa0dd336ad33c2b5, type: 3}

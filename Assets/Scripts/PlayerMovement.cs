@@ -1,4 +1,4 @@
-using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -51,7 +51,10 @@ public class PlayerMovement : MonoBehaviour
     private void HandleRotation()
     {
         Vector3 currentRot = transform.forward;
-        transform.forward = Vector3.Lerp(currentRot, moveDir, Time.deltaTime * rotateSpeed);
+        Vector3 lookAt = Vector3.Lerp(currentRot, moveDir, Time.deltaTime * rotateSpeed);
+
+        Quaternion rotate = Quaternion.LookRotation(lookAt, Vector3.up);
+        rb.rotation = rotate;
     }
 
     private void HandleMovement()
